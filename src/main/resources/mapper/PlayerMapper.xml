@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xinggevip.dao.PlayerMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="com.xinggevip.domain.Player">
+                    <id column="id" property="id"/>
+                    <result column="activate_id" property="activateId"/>
+                    <result column="name" property="name"/>
+                    <result column="company" property="company"/>
+                    <result column="dep" property="dep"/>
+                    <result column="post" property="post"/>
+                    <result column="sex" property="sex"/>
+                    <result column="phone" property="phone"/>
+                    <result column="profile" property="profile"/>
+                    <result column="strone" property="strone"/>
+                    <result column="strtwo" property="strtwo"/>
+                    <result column="strthree" property="strthree"/>
+                    <result column="numone" property="numone"/>
+                    <result column="numtwo" property="numtwo"/>
+                    <result column="numthree" property="numthree"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+            id, activate_id, name, company, dep, post, sex, phone, profile, strone, strtwo, strthree, numone, numtwo, numthree
+        </sql>
+
+</mapper>
