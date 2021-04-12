@@ -41,6 +41,8 @@ public enum ResultCodeEnum {
     REG_ERROR(413,"注册失败"),
     // 登录失败
     REG_ERRORTWO(414,"注册失败，该手机号已注册！"),
+    // 找不到此验证码
+    NOFIND_CODE_ERRORTWO(415,"无此验证码！"),
 
     // 服务器错误
     SERVER_ERROR(500,"server error"),
