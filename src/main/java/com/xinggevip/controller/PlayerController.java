@@ -1,5 +1,8 @@
 package com.xinggevip.controller;
 
+import com.xinggevip.enunm.ResultCodeEnum;
+import com.xinggevip.utils.HttpResult;
+import com.xinggevip.vo.Page;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.web.bind.annotation.*;
@@ -48,8 +51,13 @@ public class PlayerController {
 
     @ApiOperation(value = "更新")
     @PutMapping()
-    public int update(@RequestBody Player player){
-        return playerService.updateData(player);
+    public HttpResult update(@RequestBody Player player){
+        if (playerService.updateData(player) == 0) {
+            HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.UPDATE_ERROR);
+            return httpResult;
+        }
+        HttpResult<Object> httpResult = HttpResult.success(ResultCodeEnum.UPDATE_SUCCESS);
+        return httpResult;
     }
 
     @ApiOperation(value = "查询分页数据")
@@ -63,9 +71,15 @@ public class PlayerController {
         return playerService.findListByPage(page, pageCount);
     }
 
+    @ApiOperation(value = "根据活动ID关键字和分页信息获取")
+    @PostMapping("/getPlayers")
+    public HttpResult getPlayers(@RequestBody Page page) {
+        return playerService.getPlayers(page);
+    }
+
     @ApiOperation(value = "id查询")
     @GetMapping("{id}")
-    public Player findById(@PathVariable Long id){
+    public Player findById(@PathVariable Long id) {
         return playerService.findById(id);
     }
 

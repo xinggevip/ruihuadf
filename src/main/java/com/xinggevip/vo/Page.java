@@ -3,6 +3,7 @@ package com.xinggevip.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -32,34 +33,13 @@ public class Page implements Serializable {
     private Integer pageSize;
 
     @ApiModelProperty(value = "姓名")
-    private String username;
+    private String name;
 
-    @ApiModelProperty(value = "手机号")
-    private String phonenumber;
+    @ApiModelProperty(value = "活动ID")
+    private Long actId;
 
-    @ApiModelProperty(value = "关键字")
-    private String keyword;
-
-    @ApiModelProperty(value = "预约状态")
-    private Integer status;
-
-    @ApiModelProperty(value = "开始时间")
-    private Date starttime;
-
-    @ApiModelProperty(value = "结束时间")
-    private Date endtime;
-
-    @ApiModelProperty(value = "房间id")
-    private Integer roomid;
-
-    @ApiModelProperty(value = "支付方式id")
-    private Integer paytypeid;
-
-    @ApiModelProperty(value = "账单类型，0 不指定、1 充值、 2 其他消费、 3 房间消费")
-    private Integer flag;
-
-    @ApiModelProperty(value = "渠道id")
-    private Integer sourceid;
+    @ApiModelProperty(value = "环节ID")
+    private Long stepId;
 
 
 }

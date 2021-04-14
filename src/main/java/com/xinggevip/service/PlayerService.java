@@ -3,6 +3,8 @@ package com.xinggevip.service;
 import com.xinggevip.domain.Player;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.xinggevip.utils.HttpResult;
+import com.xinggevip.vo.Page;
 
 /**
  * <p>
@@ -13,6 +15,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * @since 2021-04-11
  */
 public interface PlayerService extends IService<Player> {
+
+    HttpResult getPlayers(Page page);
 
     /**
      * 查询分页数据

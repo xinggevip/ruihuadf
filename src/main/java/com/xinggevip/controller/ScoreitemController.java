@@ -1,5 +1,8 @@
 package com.xinggevip.controller;
 
+import com.xinggevip.enunm.ResultCodeEnum;
+import com.xinggevip.utils.HttpResult;
+import com.xinggevip.vo.Page;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * <p>
@@ -33,11 +38,31 @@ public class ScoreitemController {
     @Resource
     private ScoreitemService scoreitemService;
 
+    @ApiOperation(value = "根据环节ID获取打分项目列表")
+    @PostMapping("/getScoreItems")
+    public HttpResult getScoreItems(@RequestParam Long stepId) {
+        List<Scoreitem> scoreitemList = scoreitemService.lambdaQuery()
+                .eq(Scoreitem::getStepId, stepId)
+                .list();
+        if (scoreitemList.size() == 0) {
+            HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.ITEM_EMPTY);
+            return httpResult;
+        }
+
+        return HttpResult.success(scoreitemList);
+    }
+
 
     @ApiOperation(value = "新增")
     @PostMapping()
-    public int add(@RequestBody Scoreitem scoreitem){
-        return scoreitemService.add(scoreitem);
+    public HttpResult add(@RequestBody Scoreitem scoreitem){
+        int add = scoreitemService.add(scoreitem);
+        if (add == 0) {
+            HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.DAFEN_ERR);
+            return httpResult;
+        }
+        HttpResult<Object> httpResult = HttpResult.success(ResultCodeEnum.DAFEN_SUCCESS);
+        return httpResult;
     }
 
     @ApiOperation(value = "删除")

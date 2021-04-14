@@ -14,6 +14,7 @@ public enum ResultCodeEnum {
     HANDLE_SUCCESS(202, "操作成功"),
     // 通用删除成功
     DELETE_SUCCESS(202, "删除成功"),
+    DAFEN_SUCCESS(202, "打分成功"),
 
 
     // 重定向
@@ -43,6 +44,13 @@ public enum ResultCodeEnum {
     REG_ERRORTWO(414,"注册失败，该手机号已注册！"),
     // 找不到此验证码
     NOFIND_CODE_ERRORTWO(415,"无此验证码！"),
+    // 此活动无任何环节，
+    STEP_EMPTY(416,"此活动无任何环节，请添加环节"),
+    // 找不到此活动
+    NOFIND_ACT_ERR(417,"找不到此活动"),
+    NOFIND_STEP_ERR(417, "找不到此环节"),
+    ITEM_EMPTY(418, "当前环节无任何评分项目"),
+    DAFEN_ERR(419, "打分失败"),
 
     // 服务器错误
     SERVER_ERROR(500,"server error"),

@@ -1,7 +1,12 @@
 package com.xinggevip.controller;
 
+import com.xinggevip.domain.Activate;
+import com.xinggevip.enunm.ResultCodeEnum;
+import com.xinggevip.service.ActivateService;
+import com.xinggevip.utils.HttpResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.*;
 import com.xinggevip.service.StepService;
 import com.xinggevip.domain.Step;
@@ -13,6 +18,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * <p>
@@ -32,6 +39,23 @@ public class StepController {
 
     @Resource
     private StepService stepService;
+
+    @Resource
+    private ActivateService activateService;
+
+    // 根据活动ID获取活动环节列表
+    @ApiOperation(value = "根据活动ID获取活动环节列表")
+    @PostMapping("/steplist")
+    public HttpResult getStepByActID(@RequestParam Long actid) {
+        List<Step> list = stepService.lambdaQuery().eq(Step::getActivateId, actid).list();
+        if (list.size() == 0) {
+            HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.STEP_EMPTY);
+            return httpResult;
+        }
+
+        HttpResult<List<Step>> httpResult = HttpResult.success(list);
+        return httpResult;
+    }
 
 
     @ApiOperation(value = "新增")
@@ -65,8 +89,29 @@ public class StepController {
 
     @ApiOperation(value = "id查询")
     @GetMapping("{id}")
-    public Step findById(@PathVariable Long id){
-        return stepService.findById(id);
+    public HttpResult findById(@PathVariable Long id){
+        Step step = stepService.findById(id);
+        if (step == null) {
+            HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.NOFIND_STEP_ERR);
+            return httpResult;
+        }
+        HttpResult<Step> httpResult = HttpResult.success(step);
+        return httpResult;
+    }
+
+    @ApiOperation(value = "id查询当前环节")
+    @PostMapping("/currentStep")
+    public HttpResult currentStep(@RequestParam Long id){
+        Activate activate = activateService.findById(id);
+        String strone = activate.getStrone();
+        Long currentStepId = Long.valueOf(strone);
+        Step step = stepService.findById(currentStepId);
+        if (step == null) {
+            HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.NOFIND_STEP_ERR);
+            return httpResult;
+        }
+        HttpResult<Step> httpResult = HttpResult.success(step);
+        return httpResult;
     }
 
 }

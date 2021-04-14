@@ -1,5 +1,6 @@
 package com.xinggevip.controller;
 
+import com.xinggevip.enunm.ResultCodeEnum;
 import com.xinggevip.utils.HttpResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -49,8 +50,13 @@ public class ActivateController {
 
     @ApiOperation(value = "更新")
     @PutMapping()
-    public int update(@RequestBody Activate activate){
-        return activateService.updateData(activate);
+    public HttpResult update(@RequestBody Activate activate){
+        int i = activateService.updateData(activate);
+        if (i == 0) {
+            HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.UPDATE_ERROR);
+            return httpResult;
+        }
+        return HttpResult.success(ResultCodeEnum.UPDATE_SUCCESS);
     }
 
     @ApiOperation(value = "查询分页数据")
@@ -67,8 +73,10 @@ public class ActivateController {
 
     @ApiOperation(value = "id查询")
     @GetMapping("{id}")
-    public Activate findById(@PathVariable Long id){
-        return activateService.findById(id);
+    public HttpResult findById(@PathVariable Long id){
+        Activate activate = activateService.findById(id);
+        HttpResult<Activate> httpResult = HttpResult.success(activate);
+        return httpResult;
     }
 
 }

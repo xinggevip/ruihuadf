@@ -1,13 +1,18 @@
 package com.xinggevip.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xinggevip.domain.Player;
 import com.xinggevip.dao.PlayerMapper;
 import com.xinggevip.service.PlayerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xinggevip.utils.HttpResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+
+import java.util.List;
 
 /**
  * <p>
@@ -19,6 +24,19 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
  */
 @Service
 public class PlayerServiceImpl extends ServiceImpl<PlayerMapper, Player> implements PlayerService {
+
+    @Autowired
+    private PlayerService playerService;
+
+    @Override
+    public HttpResult getPlayers(com.xinggevip.vo.Page page) {
+        IPage<Player> playerIPage = playerService.lambdaQuery()
+                .eq(Player::getActivateId, page.getActId())
+                .like(Player::getName, page.getName())
+                .page(new Page<>(page.getPageNum(), page.getPageSize()));
+        HttpResult<IPage<Player>> httpResult = HttpResult.success(playerIPage);
+        return httpResult;
+    }
 
     @Override
     public  IPage<Player> findListByPage(Integer page, Integer pageCount){
