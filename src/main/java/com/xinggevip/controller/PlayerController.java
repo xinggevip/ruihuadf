@@ -79,8 +79,12 @@ public class PlayerController {
 
     @ApiOperation(value = "id查询")
     @GetMapping("{id}")
-    public Player findById(@PathVariable Long id) {
-        return playerService.findById(id);
+    public HttpResult findById(@PathVariable Long id) {
+        Player player = playerService.findById(id);
+        if (player == null) {
+            return HttpResult.failure(ResultCodeEnum.NO_FIND_USER_BY_ID);
+        }
+        return HttpResult.success(playerService.findById(id));
     }
 
 }

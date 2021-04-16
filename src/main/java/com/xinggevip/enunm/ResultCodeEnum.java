@@ -51,6 +51,9 @@ public enum ResultCodeEnum {
     NOFIND_STEP_ERR(417, "找不到此环节"),
     ITEM_EMPTY(418, "当前环节无任何评分项目"),
     DAFEN_ERR(419, "打分失败"),
+    NO_FIND_USER_BY_ID(420, "没有根据ID查到此人"),
+    ACT_NOT_START(421, "活动未开始"),
+    ACT_END(422, "活动已结束"),
 
     // 服务器错误
     SERVER_ERROR(500,"server error"),

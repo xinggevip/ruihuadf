@@ -1,12 +1,17 @@
 package com.xinggevip.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xinggevip.domain.Activate;
+import com.xinggevip.domain.Scoreitem;
+import com.xinggevip.domain.Scorevalue;
 import com.xinggevip.enunm.ResultCodeEnum;
 import com.xinggevip.service.ActivateService;
+import com.xinggevip.service.ScoreitemService;
 import com.xinggevip.utils.HttpResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import com.xinggevip.service.StepService;
 import com.xinggevip.domain.Step;
@@ -42,6 +47,35 @@ public class StepController {
 
     @Resource
     private ActivateService activateService;
+
+    @Resource
+    private ScoreitemService scoreitemService;
+
+    // 根据活动ID获取当前环节的打分项
+    @ApiOperation(value = "根据活动ID获取当前环节的打分项")
+    @PostMapping("/currentScoreList")
+    public HttpResult currentScoreList(@RequestParam Long actid){
+        Activate activate = activateService.findById(actid);
+        String strone = activate.getStrone();
+        // 活动状态为空返回服务器异常
+        if (StringUtils.isEmpty(strone)) {
+            return HttpResult.failure(ResultCodeEnum.SERVER_ERROR);
+        }
+        // 0为未开始
+        if ("0".equals(strone)) {
+            return HttpResult.failure(ResultCodeEnum.ACT_NOT_START);
+        }
+        // -1为已结束
+        if ("-1".equals(strone)) {
+            return HttpResult.failure(ResultCodeEnum.ACT_END);
+        }
+
+        Long currentStepId = Long.valueOf(strone);
+        Step step = stepService.findById(currentStepId);
+        Integer stepId = step.getId();
+        List<Scoreitem> scoreitemList = scoreitemService.lambdaQuery().eq(Scoreitem::getStepId, stepId).list();
+        return HttpResult.success(scoreitemList);
+    }
 
     // 根据活动ID获取活动环节列表
     @ApiOperation(value = "根据活动ID获取活动环节列表")

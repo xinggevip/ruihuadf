@@ -41,7 +41,7 @@ public class Scoreitem extends Model<Scoreitem> implements Serializable {
 
     private BigDecimal maxScore;
 
-    @ApiModelProperty(value = "1为数字打分，2为文字评价")
+    @ApiModelProperty(value = "1为数字打分，2星级打分")
     private Integer scoreType;
 
     private String strOne;
