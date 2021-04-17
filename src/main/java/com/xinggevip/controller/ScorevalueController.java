@@ -1,5 +1,6 @@
 package com.xinggevip.controller;
 
+import com.xinggevip.utils.HttpResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * <p>
@@ -39,6 +42,17 @@ public class ScorevalueController {
     public int add(@RequestBody Scorevalue scorevalue){
         return scorevalueService.add(scorevalue);
     }
+
+    @ApiOperation(value = "领导打分")
+    @PostMapping("/dafen")
+    public HttpResult dafen(@RequestBody List<Scorevalue> scorevalueList) {
+        // 检查当前评委是否已经给他打过分了，没有打则存储，斗则抛出异常
+        for (Scorevalue scorevalue : scorevalueList) {
+            scorevalueService.add(scorevalue);
+        }
+        return HttpResult.success();
+    }
+
 
     @ApiOperation(value = "删除")
     @DeleteMapping("{id}")

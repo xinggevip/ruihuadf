@@ -1,6 +1,8 @@
 package com.xinggevip.controller;
 
+import com.xinggevip.domain.Scorevalue;
 import com.xinggevip.enunm.ResultCodeEnum;
+import com.xinggevip.service.ScorevalueService;
 import com.xinggevip.utils.HttpResult;
 import com.xinggevip.vo.Page;
 import io.swagger.annotations.ApiImplicitParam;
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author xinggevip
@@ -36,22 +38,25 @@ public class PlayerController {
     @Resource
     private PlayerService playerService;
 
+    @Resource
+    private ScorevalueService scorevalueService;
+
 
     @ApiOperation(value = "新增")
     @PostMapping()
-    public int add(@RequestBody Player player){
+    public int add(@RequestBody Player player) {
         return playerService.add(player);
     }
 
     @ApiOperation(value = "删除")
     @DeleteMapping("{id}")
-    public int delete(@PathVariable("id") Long id){
+    public int delete(@PathVariable("id") Long id) {
         return playerService.delete(id);
     }
 
     @ApiOperation(value = "更新")
     @PutMapping()
-    public HttpResult update(@RequestBody Player player){
+    public HttpResult update(@RequestBody Player player) {
         if (playerService.updateData(player) == 0) {
             HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.UPDATE_ERROR);
             return httpResult;
@@ -62,12 +67,12 @@ public class PlayerController {
 
     @ApiOperation(value = "查询分页数据")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", value = "页码"),
-        @ApiImplicitParam(name = "pageCount", value = "每页条数")
+            @ApiImplicitParam(name = "page", value = "页码"),
+            @ApiImplicitParam(name = "pageCount", value = "每页条数")
     })
     @GetMapping()
     public IPage<Player> findListByPage(@RequestParam Integer page,
-                                   @RequestParam Integer pageCount){
+                                        @RequestParam Integer pageCount) {
         return playerService.findListByPage(page, pageCount);
     }
 
@@ -87,4 +92,11 @@ public class PlayerController {
         return HttpResult.success(playerService.findById(id));
     }
 
+    @ApiOperation(value = "根据环节id，评委id得到该评委已打分的选手")
+    @PostMapping("/findYidafenPlayers")
+    public HttpResult findYidafenPlayers(@RequestParam Integer stepid,@RequestParam Integer judgeid) {
+        //
+//        scorevalueService.lambdaQuery().eq(Scorevalue::getScoreitemId)
+        return null;
+    }
 }
