@@ -54,6 +54,8 @@ public enum ResultCodeEnum {
     NO_FIND_USER_BY_ID(420, "没有根据ID查到此人"),
     ACT_NOT_START(421, "活动未开始"),
     ACT_END(422, "活动已结束"),
+    DAFEN_ITEM_EMPTY(423, "打分项目为空"),
+    DOUBLE_DAFWN_ERR(424, "您已给该选手打分，不能重复打分"),
 
     // 服务器错误
     SERVER_ERROR(500,"server error"),

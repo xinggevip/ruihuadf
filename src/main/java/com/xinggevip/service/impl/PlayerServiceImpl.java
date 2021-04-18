@@ -34,6 +34,8 @@ public class PlayerServiceImpl extends ServiceImpl<PlayerMapper, Player> impleme
                 .eq(Player::getActivateId, page.getActId())
                 .like(Player::getName, page.getName())
                 .page(new Page<>(page.getPageNum(), page.getPageSize()));
+        List<Player> playerList = playerIPage.getRecords();
+        
         HttpResult<IPage<Player>> httpResult = HttpResult.success(playerIPage);
         return httpResult;
     }

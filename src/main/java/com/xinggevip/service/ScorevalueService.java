@@ -3,6 +3,7 @@ package com.xinggevip.service;
 import com.xinggevip.domain.Scorevalue;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.xinggevip.utils.HttpResult;
 
 /**
  * <p>
@@ -54,4 +55,6 @@ public interface ScorevalueService extends IService<Scorevalue> {
      * @return Scorevalue
      */
     Scorevalue findById(Long id);
+
+    HttpResult getPlayerByStepIdAndJudgeId(Integer stepid, Integer judgeid,String playername);
 }

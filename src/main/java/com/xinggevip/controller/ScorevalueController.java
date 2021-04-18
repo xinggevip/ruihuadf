@@ -1,8 +1,13 @@
 package com.xinggevip.controller;
 
+import com.xinggevip.dao.StepMapper;
+import com.xinggevip.domain.Scoreitem;
+import com.xinggevip.enunm.ResultCodeEnum;
+import com.xinggevip.service.ScoreitemService;
 import com.xinggevip.utils.HttpResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.xinggevip.service.ScorevalueService;
 import com.xinggevip.domain.Scorevalue;
@@ -16,6 +21,7 @@ import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -36,6 +42,12 @@ public class ScorevalueController {
     @Resource
     private ScorevalueService scorevalueService;
 
+    @Resource
+    private ScoreitemService scoreitemService;
+
+    @Autowired
+    private StepMapper stepMapper;
+
 
     @ApiOperation(value = "新增")
     @PostMapping()
@@ -46,7 +58,21 @@ public class ScorevalueController {
     @ApiOperation(value = "领导打分")
     @PostMapping("/dafen")
     public HttpResult dafen(@RequestBody List<Scorevalue> scorevalueList) {
-        // 检查当前评委是否已经给他打过分了，没有打则存储，斗则抛出异常
+        // 检查当前评委是否已经给他打过分了，没有打则存储，否则抛出异常
+        if (scorevalueList.size() == 0) {
+            return HttpResult.failure(ResultCodeEnum.DAFEN_ITEM_EMPTY);
+        }
+
+        Scorevalue scorevalue1 = scorevalueList.get(0);
+        Scoreitem scoreitem = scoreitemService.lambdaQuery()
+                .eq(Scoreitem::getId, scorevalue1.getScoreitemId())
+                .list()
+                .get(0);
+        List<Map<String, Object>> yidafenPlayers = stepMapper.getPlayerByStepIdAndJudgeId(scoreitem.getStepId(), scorevalue1.getJudgeId(), null,scorevalue1.getPlayerId());
+        if (yidafenPlayers.size() > 0) {
+            return HttpResult.failure(ResultCodeEnum.DOUBLE_DAFWN_ERR);
+        }
+
         for (Scorevalue scorevalue : scorevalueList) {
             scorevalueService.add(scorevalue);
         }

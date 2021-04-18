@@ -1,13 +1,19 @@
 package com.xinggevip.service.impl;
 
+import com.xinggevip.dao.StepMapper;
 import com.xinggevip.domain.Scorevalue;
 import com.xinggevip.dao.ScorevalueMapper;
 import com.xinggevip.service.ScorevalueService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xinggevip.utils.HttpResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -19,6 +25,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
  */
 @Service
 public class ScorevalueServiceImpl extends ServiceImpl<ScorevalueMapper, Scorevalue> implements ScorevalueService {
+
+    @Autowired
+    private StepMapper stepMapper;
 
     @Override
     public  IPage<Scorevalue> findListByPage(Integer page, Integer pageCount){
@@ -46,5 +55,11 @@ public class ScorevalueServiceImpl extends ServiceImpl<ScorevalueMapper, Scoreva
     @Override
     public Scorevalue findById(Long id){
         return  baseMapper.selectById(id);
+    }
+
+    @Override
+    public HttpResult getPlayerByStepIdAndJudgeId(Integer stepid, Integer judgeid,String playername) {
+        List<Map<String, Object>> yidafenPlayers = stepMapper.getPlayerByStepIdAndJudgeId(stepid, judgeid, playername,null);
+        return HttpResult.success(yidafenPlayers);
     }
 }

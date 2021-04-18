@@ -20,5 +20,46 @@
         <sql id="Base_Column_List">
             id, activate_id, title, profile, strone, strtwo, strthree, numone, numtwo, numthree
         </sql>
+    <select id="getPlayerByStepIdAndJudgeId" resultType="java.util.Map">
+        SELECT
+        step.id AS step_id,
+        GROUP_CONCAT(scoreitem.item_name) AS score_item_list,
+        scorevalue.player_id,
+        scorevalue.judge_id,
+        Sum(scorevalue.num_value) AS sum_score,
+        player.`name`,
+        player.company,
+        player.dep,
+        player.post,
+        step.title,
+        judge.judge_name
+        FROM
+        scorevalue
+        INNER JOIN scoreitem ON scorevalue.scoreitem_id = scoreitem.id
+        INNER JOIN step ON scoreitem.step_id = step.id
+        INNER JOIN player ON scorevalue.player_id = player.id
+        INNER JOIN judge ON scorevalue.judge_id = judge.id
+
+        <where>
+            <if test="judgeid != null and judgeid != ''">
+                AND scorevalue.judge_id = #{judgeid}
+            </if>
+
+            <if test="stepid != null and stepid != ''">
+                AND step.id = #{stepid}
+            </if>
+
+            <if test="playername != null and playername != ''">
+                AND player.`name` LIKE '%${playername}%'
+            </if>
+
+            <if test="playerid!=null and playerid != ''">
+                AND scorevalue.player_id = #{playerid}
+            </if>
+        </where>
+
+        GROUP BY scorevalue.judge_id, scorevalue.player_id
+        ORDER BY sum_score DESC
+    </select>
 
 </mapper>
