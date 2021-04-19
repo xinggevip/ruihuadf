@@ -140,12 +140,29 @@ public class StepController {
         String strone = activate.getStrone();
         Long currentStepId = Long.valueOf(strone);
         Step step = stepService.findById(currentStepId);
-        if (step == null) {
-            HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.NOFIND_STEP_ERR);
-            return httpResult;
+
+
+        if ("0".equals(strone)) {
+            Step step1 = new Step();
+            step1.setActivateId(id.intValue());
+            step1.setId(0);
+            step1.setTitle("未开始");
+            return HttpResult.success(step1);
         }
-        HttpResult<Step> httpResult = HttpResult.success(step);
-        return httpResult;
+
+        if ("-1".equals(strone)) {
+            Step step1 = new Step();
+            step1.setActivateId(id.intValue());
+            step1.setId(-1);
+            step1.setTitle("已结束");
+            return HttpResult.success(step1);
+        }
+
+        if (step == null) {
+            return HttpResult.failure(ResultCodeEnum.NOFIND_STEP_ERR);
+        }
+
+        return HttpResult.success(step);
     }
 
 }
