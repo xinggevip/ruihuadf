@@ -26,6 +26,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * 前端控制器
@@ -74,6 +76,12 @@ public class PlayerController {
             HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.UPDATE_ERROR);
             return httpResult;
         }
+
+        Player player1 = playerService.findById(Long.valueOf(player.getId()));
+        Activate activate1 = activateService.findById(Long.valueOf(player1.getActivateId()));
+        activate1.setNumone(BigDecimal.valueOf(activate1.getNumone().intValue() + 1));
+        activate1.insertOrUpdate();
+
         HttpResult<Object> httpResult = HttpResult.success(ResultCodeEnum.UPDATE_SUCCESS);
         return httpResult;
     }
@@ -88,6 +96,10 @@ public class PlayerController {
         if ("down".equals(status)) {
             playerService.lambdaUpdate().eq(Player::getActivateId, actid).set(Player::getStrone, "0").update();
         }
+
+        Activate activate1 = activateService.findById(Long.valueOf(actid));
+        activate1.setNumone(BigDecimal.valueOf(activate1.getNumone().intValue() + 1));
+        activate1.insertOrUpdate();
 
         return HttpResult.success();
     }

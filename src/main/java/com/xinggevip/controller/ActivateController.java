@@ -16,6 +16,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  *  前端控制器
@@ -56,6 +58,9 @@ public class ActivateController {
             HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.UPDATE_ERROR);
             return httpResult;
         }
+        Activate activate1 = activateService.findById(Long.valueOf(activate.getId()));
+        activate1.setNumone(BigDecimal.valueOf(activate1.getNumone().intValue() + 1));
+        activate1.insertOrUpdate();
         return HttpResult.success(ResultCodeEnum.UPDATE_SUCCESS);
     }
 
