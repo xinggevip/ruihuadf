@@ -7,6 +7,7 @@ import com.xinggevip.service.ScoreitemService;
 import com.xinggevip.utils.HttpResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.xinggevip.service.ScorevalueService;
@@ -77,6 +78,13 @@ public class ScorevalueController {
             scorevalueService.add(scorevalue);
         }
         return HttpResult.success();
+    }
+
+    // 根据环节ID和选手ID和评委ID查成绩
+    @ApiOperation(value = "根据环节ID和选手ID和评委ID查车成绩")
+    @PostMapping("getYiDaScoreValue")
+    public HttpResult getYiDaScoreValue(@RequestParam Integer stepid, @RequestParam Integer playerid, @RequestParam Integer judgeid) {
+        return scorevalueService.getYiDaScoreValue(stepid, playerid, judgeid);
     }
 
 

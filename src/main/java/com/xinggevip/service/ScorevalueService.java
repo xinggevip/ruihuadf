@@ -57,4 +57,6 @@ public interface ScorevalueService extends IService<Scorevalue> {
     Scorevalue findById(Long id);
 
     HttpResult getPlayerByStepIdAndJudgeId(Integer stepid, Integer judgeid,String playername);
+
+    HttpResult getYiDaScoreValue(Integer stepid, Integer playerid, Integer judgeid);
 }

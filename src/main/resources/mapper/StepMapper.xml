@@ -61,5 +61,40 @@
         GROUP BY scorevalue.judge_id, scorevalue.player_id
         ORDER BY sum_score DESC
     </select>
+    <select id="getYiDaScoreValue" resultType="java.util.Map">
+        SELECT
+        step.id AS step_id,
+        scoreitem.item_name,
+        scorevalue.player_id,
+        scorevalue.judge_id,
+        scoreitem.id AS scoreitem_id,
+        scorevalue.num_value,
+        scoreitem.max_score,
+        player.`name`,
+        player.company,
+        player.dep,
+        player.post,
+        step.title,
+        judge.judge_name
+        FROM
+        scorevalue
+        INNER JOIN scoreitem ON scorevalue.scoreitem_id = scoreitem.id
+        INNER JOIN step ON scoreitem.step_id = step.id
+        INNER JOIN player ON scorevalue.player_id = player.id
+        INNER JOIN judge ON scorevalue.judge_id = judge.id
+        <where>
+            <if test="judgeid != null and judgeid != ''">
+                AND scorevalue.judge_id = #{judgeid}
+            </if>
+
+            <if test="playerid != null and playerid != ''">
+                AND scorevalue.player_id = #{playerid}
+            </if>
+
+            <if test="stepid != null and stepid != ''">
+                AND scoreitem.step_id = #{stepid}
+            </if>
+        </where>
+    </select>
 
 </mapper>

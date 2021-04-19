@@ -22,4 +22,10 @@ public interface StepMapper extends BaseMapper<Step> {
             @Param("playername") String playername,
             @Param("playerid") Integer playerid
     );
+
+    List<Map<String,Object>> getYiDaScoreValue(
+            @Param("stepid") Integer stepid,
+            @Param("playerid") Integer playerid,
+            @Param("judgeid") Integer judgeid
+    );
 }
