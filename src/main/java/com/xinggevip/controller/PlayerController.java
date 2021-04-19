@@ -1,5 +1,6 @@
 package com.xinggevip.controller;
 
+import com.baomidou.mybatisplus.extension.service.additional.update.impl.LambdaUpdateChainWrapper;
 import com.xinggevip.domain.Activate;
 import com.xinggevip.domain.Scorevalue;
 import com.xinggevip.domain.Step;
@@ -11,6 +12,7 @@ import com.xinggevip.utils.HttpResult;
 import com.xinggevip.vo.Page;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import jdk.nashorn.internal.ir.CallNode;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import com.xinggevip.service.PlayerService;
@@ -74,6 +76,20 @@ public class PlayerController {
         }
         HttpResult<Object> httpResult = HttpResult.success(ResultCodeEnum.UPDATE_SUCCESS);
         return httpResult;
+    }
+
+    @ApiOperation(value = "根据活动ID更新所有选手的上台状态")
+    @PostMapping("/updateAllPlayersStatus")
+    public HttpResult UpdateAllPlayersStatus(@RequestParam String actid,@RequestParam String status) {
+        if ("on".equals(status)) {
+            playerService.lambdaUpdate().eq(Player::getActivateId, actid).set(Player::getStrone, "1").update();
+        }
+
+        if ("down".equals(status)) {
+            playerService.lambdaUpdate().eq(Player::getActivateId, actid).set(Player::getStrone, "0").update();
+        }
+
+        return HttpResult.success();
     }
 
     @ApiOperation(value = "查询分页数据")
