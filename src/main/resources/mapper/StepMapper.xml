@@ -65,8 +65,10 @@
         SELECT
         step.id AS step_id,
         scoreitem.item_name,
+        scoreitem.score_type,
         scorevalue.player_id,
         scorevalue.judge_id,
+        scorevalue.str_value,
         scoreitem.id AS scoreitem_id,
         scorevalue.num_value,
         scoreitem.max_score,
