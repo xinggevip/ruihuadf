@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * <p>
@@ -40,8 +41,13 @@ public class ActivateController {
 
     @ApiOperation(value = "新增")
     @PostMapping()
-    public int add(@RequestBody Activate activate){
-        return activateService.add(activate);
+    public HttpResult add(@RequestBody Activate activate){
+        activate.setPushDate(new Date());
+        boolean b = activate.insertOrUpdate();
+        if (!b) {
+            return HttpResult.failure(ResultCodeEnum.ACT_ADD_ERR);
+        }
+        return HttpResult.success(activate);
     }
 
     @ApiOperation(value = "删除")

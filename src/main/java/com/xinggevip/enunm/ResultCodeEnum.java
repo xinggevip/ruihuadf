@@ -56,6 +56,7 @@ public enum ResultCodeEnum {
     ACT_END(422, "活动已结束"),
     DAFEN_ITEM_EMPTY(423, "打分项目为空"),
     DOUBLE_DAFWN_ERR(424, "您已给该选手打分，不能重复打分"),
+    ACT_ADD_ERR(425, "活动创建失败"),
 
     // 服务器错误
     SERVER_ERROR(500,"server error"),

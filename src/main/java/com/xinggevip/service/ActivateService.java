@@ -3,6 +3,7 @@ package com.xinggevip.service;
 import com.xinggevip.domain.Activate;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.xinggevip.utils.HttpResult;
 
 /**
  * <p>

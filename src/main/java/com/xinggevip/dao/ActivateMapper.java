@@ -2,6 +2,7 @@ package com.xinggevip.dao;
 
 import com.xinggevip.domain.Activate;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>

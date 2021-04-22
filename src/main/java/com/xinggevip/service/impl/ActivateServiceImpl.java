@@ -2,8 +2,11 @@ package com.xinggevip.service.impl;
 
 import com.xinggevip.domain.Activate;
 import com.xinggevip.dao.ActivateMapper;
+import com.xinggevip.enunm.ResultCodeEnum;
 import com.xinggevip.service.ActivateService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xinggevip.utils.HttpResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.metadata.IPage;
