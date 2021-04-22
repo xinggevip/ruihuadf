@@ -1,5 +1,6 @@
 package com.xinggevip.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xinggevip.enunm.ResultCodeEnum;
 import com.xinggevip.utils.HttpResult;
 import io.swagger.annotations.ApiImplicitParam;
@@ -78,7 +79,10 @@ public class ActivateController {
     @GetMapping()
     public HttpResult findListByPage(@RequestParam Integer page,
                                    @RequestParam Integer pageCount){
-        HttpResult<IPage<Activate>> httpResult = new HttpResult<>(activateService.findListByPage(page, pageCount));
+        HttpResult<IPage<Activate>> httpResult = new HttpResult<>(activateService.lambdaQuery()
+                .eq(Activate::getStrtwo,"-1")
+                .orderByDesc(Activate::getId)
+                .page(new Page<Activate>(page, pageCount)));
         return httpResult;
     }
 

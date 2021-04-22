@@ -94,8 +94,12 @@ public class StepController {
 
     @ApiOperation(value = "新增")
     @PostMapping()
-    public int add(@RequestBody Step step){
-        return stepService.add(step);
+    public HttpResult add(@RequestBody Step step){
+        boolean b = step.insertOrUpdate();
+        if (!b) {
+            return HttpResult.failure(ResultCodeEnum.TONG_ERR);
+        }
+        return HttpResult.success(step);
     }
 
     @ApiOperation(value = "删除")
