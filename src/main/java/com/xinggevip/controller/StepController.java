@@ -104,8 +104,12 @@ public class StepController {
 
     @ApiOperation(value = "删除")
     @DeleteMapping("{id}")
-    public int delete(@PathVariable("id") Long id){
-        return stepService.delete(id);
+    public HttpResult delete(@PathVariable("id") Long id){
+        int delete = stepService.delete(id);
+        if (delete == 0) {
+            return HttpResult.failure(ResultCodeEnum.DELETE_ERROR);
+        }
+        return HttpResult.success();
     }
 
     @ApiOperation(value = "更新")
