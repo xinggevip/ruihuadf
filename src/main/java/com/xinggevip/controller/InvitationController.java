@@ -1,5 +1,6 @@
 package com.xinggevip.controller;
 
+import com.xinggevip.utils.HttpResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 /**
  * <p>
@@ -68,5 +74,32 @@ public class InvitationController {
     public Invitation findById(@PathVariable Long id){
         return invitationService.findById(id);
     }
+
+    // 根据互动id获取验证码
+    @ApiOperation(value = "根据互动id获取验证码")
+    @GetMapping("/getInvitationsByActId/{id}")
+    public HttpResult getInvitationsByActId(@PathVariable Integer id){
+        List<Invitation> invitationList = invitationService.lambdaQuery().eq(Invitation::getActivateId, id).list();
+        if (invitationList.size() == 0) {
+            ArrayList<Invitation> invitations = new ArrayList<>();
+            for (int i = 0; i < 3; i++) {
+                Invitation invitation = new Invitation();
+                invitation.setActivateId(id);
+                invitation.setInvitationType(String.valueOf(i + 1));
+                double x = Math.random();
+                double min = 1000;
+                double max = 9999;
+                double y = x * (max - min) + min;
+                long n = (long) y;
+                System.out.println(n);
+                invitation.setInvitationCode(String.valueOf(n));
+                invitation.insert();
+                invitations.add(invitation);
+            }
+            return HttpResult.success(invitations);
+        }
+        return HttpResult.success(invitationList);
+    }
+
 
 }

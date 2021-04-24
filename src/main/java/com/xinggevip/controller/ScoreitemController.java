@@ -18,6 +18,7 @@ import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -53,22 +54,59 @@ public class ScoreitemController {
     }
 
 
+    @ApiOperation(value = "根据环节ID获取打分项目列表，去掉评价")
+    @PostMapping("/onlyGetScoreItems")
+    public HttpResult onlyGetScoreItems(@RequestParam Long stepId) {
+        List<Scoreitem> scoreitemList = scoreitemService.lambdaQuery()
+                .eq(Scoreitem::getStepId, stepId)
+                .list()
+                .stream()
+                .filter(s -> s.getScoreType() == 1)
+                .collect(Collectors.toList());
+        if (scoreitemList.size() == 0) {
+            HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.ITEM_EMPTY);
+            return httpResult;
+        }
+
+        return HttpResult.success(scoreitemList);
+    }
+
+
     @ApiOperation(value = "新增")
     @PostMapping()
     public HttpResult add(@RequestBody Scoreitem scoreitem){
-        int add = scoreitemService.add(scoreitem);
-        if (add == 0) {
-            HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.DAFEN_ERR);
+        System.out.println(scoreitem);
+        boolean b = scoreitem.insertOrUpdate();
+        if (!b) {
+            HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.ADD_ERROR);
             return httpResult;
         }
+
+        // 根据stepid查一下有没有创建评价项目，没有则创建
+        List<Scoreitem> list = scoreitemService.lambdaQuery()
+                .eq(Scoreitem::getScoreType, 2)
+                .eq(Scoreitem::getStepId,scoreitem.getStepId())
+                .list();
+        if (list.size() == 0) {
+            Scoreitem scoreitem1 = new Scoreitem();
+            scoreitem1.setItemName("评价");
+            scoreitem1.setStepId(scoreitem.getStepId());
+            scoreitem1.setScoreType(2);
+            scoreitem1.insert();
+        }
+
         HttpResult<Object> httpResult = HttpResult.success(ResultCodeEnum.DAFEN_SUCCESS);
         return httpResult;
     }
 
     @ApiOperation(value = "删除")
     @DeleteMapping("{id}")
-    public int delete(@PathVariable("id") Long id){
-        return scoreitemService.delete(id);
+    public HttpResult delete(@PathVariable("id") Long id){
+        int delete = scoreitemService.delete(id);
+        if (delete == 0) {
+            return HttpResult.failure(ResultCodeEnum.DELETE_ERROR);
+        }
+        return HttpResult.success(ResultCodeEnum.DELETE_SUCCESS);
     }
 
     @ApiOperation(value = "更新")

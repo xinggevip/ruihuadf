@@ -58,6 +58,7 @@ public enum ResultCodeEnum {
     DOUBLE_DAFWN_ERR(424, "您已给该选手打分，不能重复打分"),
     ACT_ADD_ERR(425, "活动创建失败"),
     TONG_ERR(426, "未知异常"),
+    STEP_SCOREITEM_HAVE_EMPTY(427, "每个环节至少要有一个打分项目"),
 
     // 服务器错误
     SERVER_ERROR(500,"server error"),

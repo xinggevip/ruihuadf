@@ -1,7 +1,11 @@
 package com.xinggevip.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xinggevip.domain.Scoreitem;
+import com.xinggevip.domain.Step;
 import com.xinggevip.enunm.ResultCodeEnum;
+import com.xinggevip.service.ScoreitemService;
+import com.xinggevip.service.StepService;
 import com.xinggevip.utils.HttpResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -19,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -39,6 +45,11 @@ public class ActivateController {
     @Resource
     private ActivateService activateService;
 
+    @Resource
+    private StepService stepService;
+
+    @Resource
+    private ScoreitemService scoreitemService;
 
     @ApiOperation(value = "新增")
     @PostMapping()
@@ -60,12 +71,39 @@ public class ActivateController {
     @ApiOperation(value = "更新")
     @PutMapping()
     public HttpResult update(@RequestBody Activate activate){
-        int i = activateService.updateData(activate);
-        if (i == 0) {
+        // 前端要求进入最后一步，验证下添加打分项的那一步  是否每个环节都设置了打分项目
+        if ("3".equals(activate.getStrtwo())) {
+
+            if (activate.getId() == null) {
+                return HttpResult.failure(ResultCodeEnum.PARAM_ERROR);
+            }
+            // 根据活动id获取所有的环节id，遍历环节id，根据环节id获取打分项目列表，过滤scoretype为1的，只要有一个打分项目列表为空就返回异常
+            List<Step> stepList = stepService.lambdaQuery()
+                    .eq(Step::getActivateId, activate.getId())
+                    .list();
+            for (Step step : stepList) {
+                List<Scoreitem> collect = scoreitemService.lambdaQuery()
+                        .eq(Scoreitem::getStepId, step.getId())
+                        .list()
+                        .stream()
+                        .filter(s -> s.getScoreType() == 1)
+                        .collect(Collectors.toList());
+                if (collect.size() == 0) {
+                    return HttpResult.failure(ResultCodeEnum.STEP_SCOREITEM_HAVE_EMPTY);
+                }
+
+            }
+
+        }
+        boolean b = activate.updateById();
+        if (!b) {
             HttpResult<Object> httpResult = HttpResult.failure(ResultCodeEnum.UPDATE_ERROR);
             return httpResult;
         }
         Activate activate1 = activateService.findById(Long.valueOf(activate.getId()));
+        if (activate1.getNumone() == null) {
+            activate1.setNumone(BigDecimal.valueOf(0));
+        }
         activate1.setNumone(BigDecimal.valueOf(activate1.getNumone().intValue() + 1));
         activate1.insertOrUpdate();
         return HttpResult.success(ResultCodeEnum.UPDATE_SUCCESS);
