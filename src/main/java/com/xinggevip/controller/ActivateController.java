@@ -7,6 +7,7 @@ import com.xinggevip.enunm.ResultCodeEnum;
 import com.xinggevip.service.ScoreitemService;
 import com.xinggevip.service.StepService;
 import com.xinggevip.utils.HttpResult;
+import com.xinggevip.vo.ActPage;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +72,11 @@ public class ActivateController {
     @ApiOperation(value = "更新")
     @PutMapping()
     public HttpResult update(@RequestBody Activate activate){
+        // 如果这个活动已经创建完成过了，则不再更新步骤
+        Activate activate2 = activate.selectById();
+        if ("-1".equals(activate2.getStrtwo())) {
+            activate.setStrtwo("-1");
+        }
         // 前端要求进入最后一步，验证下添加打分项的那一步  是否每个环节都设置了打分项目
         if ("3".equals(activate.getStrtwo())) {
 
@@ -109,19 +115,51 @@ public class ActivateController {
         return HttpResult.success(ResultCodeEnum.UPDATE_SUCCESS);
     }
 
+
     @ApiOperation(value = "查询分页数据")
     @ApiImplicitParams({
-        @ApiImplicitParam(name = "page", value = "页码"),
-        @ApiImplicitParam(name = "pageCount", value = "每页条数")
+            @ApiImplicitParam(name = "page", value = "页码"),
+            @ApiImplicitParam(name = "pageCount", value = "每页条数")
     })
-    @GetMapping()
-    public HttpResult findListByPage(@RequestParam Integer page,
-                                   @RequestParam Integer pageCount){
-        HttpResult<IPage<Activate>> httpResult = new HttpResult<>(activateService.lambdaQuery()
-                .eq(Activate::getStrtwo,"-1")
-                .orderByDesc(Activate::getId)
-                .page(new Page<Activate>(page, pageCount)));
-        return httpResult;
+    @PostMapping("getActList")
+    public HttpResult findListByPage(@RequestBody ActPage actPage) {
+
+        if (actPage.getType() == null) {
+            return HttpResult.failure(ResultCodeEnum.PARAM_ERROR);
+        } else if (actPage.getType() == 1) { // 首页获取活动创建状态为已完成的活动
+            IPage<Activate> activateIPage = activateService.lambdaQuery()
+                    .eq(Activate::getStrtwo, "-1")
+                    .eq(Activate::getStrthree,"1")
+                    .like(Activate::getTitle,actPage.getValue())
+                    .orderByDesc(Activate::getId)
+                    .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));
+            return HttpResult.success(activateIPage);
+        } else if (actPage.getType() == 2) { // 获取创建装填为草稿的活动
+            IPage<Activate> activateIPage = activateService.lambdaQuery()
+                    .eq(Activate::getUserId, actPage.getUserid())
+                    .ne(Activate::getStrtwo, "-1")
+                    .orderByDesc(Activate::getId)
+                    .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));
+            return HttpResult.success(activateIPage);
+        } else if (actPage.getType() == 3) { // 获取进行中的活动
+            IPage<Activate> activateIPage = activateService.lambdaQuery()
+                    .eq(Activate::getUserId, actPage.getUserid())
+                    .ne(Activate::getStrone, "-1")
+                    .ne(Activate::getStrone, "0")
+                    .orderByDesc(Activate::getId)
+                    .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));
+            return HttpResult.success(activateIPage);
+        } else if (actPage.getType() == 4) { // 获取已结束的活动
+            IPage<Activate> activateIPage = activateService.lambdaQuery()
+                    .eq(Activate::getUserId, actPage.getUserid())
+                    .eq(Activate::getStrone, "-1")
+                    .orderByDesc(Activate::getId)
+                    .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));
+            return HttpResult.success(activateIPage);
+        }
+
+
+        return HttpResult.failure(ResultCodeEnum.PARAM_ERROR);
     }
 
     @ApiOperation(value = "id查询")

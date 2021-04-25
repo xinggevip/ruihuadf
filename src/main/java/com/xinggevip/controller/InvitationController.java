@@ -1,5 +1,7 @@
 package com.xinggevip.controller;
 
+import com.xinggevip.domain.Activate;
+import com.xinggevip.enunm.ResultCodeEnum;
 import com.xinggevip.utils.HttpResult;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -15,10 +17,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -58,6 +58,20 @@ public class InvitationController {
         return invitationService.updateData(invitation);
     }
 
+    @ApiOperation(value = "批量更新")
+    @PostMapping("/updateInvitations")
+    public HttpResult updateInvitations(@RequestBody List<Invitation> invitationList){
+        HashSet<String> invitationHashSet = new HashSet<>(invitationList.stream().map(Invitation::getInvitationCode).collect(Collectors.toList()));
+        if (invitationHashSet.size() < invitationList.size()) {
+            return HttpResult.failure(ResultCodeEnum.CODE_DOUBLE);
+        }
+        for (Invitation invitation : invitationList) {
+            invitation.updateById();
+        }
+        return HttpResult.success();
+    }
+
+
     @ApiOperation(value = "查询分页数据")
     @ApiImplicitParams({
         @ApiImplicitParam(name = "page", value = "页码"),
@@ -76,7 +90,7 @@ public class InvitationController {
     }
 
     // 根据互动id获取验证码
-    @ApiOperation(value = "根据互动id获取验证码")
+    @ApiOperation(value = "根据活动id获取验证码")
     @GetMapping("/getInvitationsByActId/{id}")
     public HttpResult getInvitationsByActId(@PathVariable Integer id){
         List<Invitation> invitationList = invitationService.lambdaQuery().eq(Invitation::getActivateId, id).list();
@@ -96,6 +110,13 @@ public class InvitationController {
                 invitation.insert();
                 invitations.add(invitation);
             }
+            Activate activate = new Activate();
+            activate.setId(id);
+            // 表示活动创建已完成
+            activate.setStrtwo("-1");
+            // 表示活动可见，0为隐藏
+            activate.setStrthree("1");
+            activate.updateById();
             return HttpResult.success(invitations);
         }
         return HttpResult.success(invitationList);

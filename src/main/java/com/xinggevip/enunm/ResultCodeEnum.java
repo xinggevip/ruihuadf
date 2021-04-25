@@ -59,6 +59,7 @@ public enum ResultCodeEnum {
     ACT_ADD_ERR(425, "活动创建失败"),
     TONG_ERR(426, "未知异常"),
     STEP_SCOREITEM_HAVE_EMPTY(427, "每个环节至少要有一个打分项目"),
+    CODE_DOUBLE(428, "更新失败，验证码不能重复"),
 
     // 服务器错误
     SERVER_ERROR(500,"server error"),
