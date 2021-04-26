@@ -93,6 +93,13 @@ public class InvitationController {
     @ApiOperation(value = "根据活动id获取验证码")
     @GetMapping("/getInvitationsByActId/{id}")
     public HttpResult getInvitationsByActId(@PathVariable Integer id){
+        Activate activate = new Activate();
+        activate.setId(id);
+        // 表示活动创建已完成
+        activate.setStrtwo("-1");
+        // 表示活动可见，0为隐藏
+        activate.setStrthree("1");
+        activate.updateById();
         List<Invitation> invitationList = invitationService.lambdaQuery().eq(Invitation::getActivateId, id).list();
         if (invitationList.size() == 0) {
             ArrayList<Invitation> invitations = new ArrayList<>();
@@ -110,13 +117,6 @@ public class InvitationController {
                 invitation.insert();
                 invitations.add(invitation);
             }
-            Activate activate = new Activate();
-            activate.setId(id);
-            // 表示活动创建已完成
-            activate.setStrtwo("-1");
-            // 表示活动可见，0为隐藏
-            activate.setStrthree("1");
-            activate.updateById();
             return HttpResult.success(invitations);
         }
         return HttpResult.success(invitationList);

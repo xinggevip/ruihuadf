@@ -156,6 +156,14 @@ public class ActivateController {
                     .orderByDesc(Activate::getId)
                     .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));
             return HttpResult.success(activateIPage);
+        } else if (actPage.getType() == 5) {
+            IPage<Activate> activateIPage = activateService.lambdaQuery()
+                    .eq(Activate::getUserId, actPage.getUserid())
+                    .eq(Activate::getStrone, "0")
+                    .eq(Activate::getStrtwo,"-1")
+                    .orderByDesc(Activate::getId)
+                    .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));
+            return HttpResult.success(activateIPage);
         }
 
 
