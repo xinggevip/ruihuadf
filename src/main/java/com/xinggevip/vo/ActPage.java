@@ -36,8 +36,11 @@ public class ActPage implements Serializable {
     @ApiModelProperty(value = "获取类型")
     private Integer type;
 
-    @ApiModelProperty(value = "环节ID")
+    @ApiModelProperty(value = "用户ID")
     private Integer userid;
+
+    @ApiModelProperty(value = "活动状态")
+    private String status;
 
 
 }

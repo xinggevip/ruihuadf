@@ -106,8 +106,8 @@ public class UserController {
 
     @ApiOperation(value = "id查询")
     @GetMapping("{id}")
-    public User findById(@PathVariable Long id){
-        return userService.findById(id);
+    public HttpResult findById(@PathVariable Long id){
+        return HttpResult.success(userService.findById(id));
     }
 
 }

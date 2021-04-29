@@ -117,10 +117,6 @@ public class ActivateController {
 
 
     @ApiOperation(value = "查询分页数据")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", value = "页码"),
-            @ApiImplicitParam(name = "pageCount", value = "每页条数")
-    })
     @PostMapping("getActList")
     public HttpResult findListByPage(@RequestBody ActPage actPage) {
 
@@ -156,7 +152,7 @@ public class ActivateController {
                     .orderByDesc(Activate::getId)
                     .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));
             return HttpResult.success(activateIPage);
-        } else if (actPage.getType() == 5) {
+        } else if (actPage.getType() == 5) { // 获取创建完成但未开始的活动
             IPage<Activate> activateIPage = activateService.lambdaQuery()
                     .eq(Activate::getUserId, actPage.getUserid())
                     .eq(Activate::getStrone, "0")
@@ -164,6 +160,26 @@ public class ActivateController {
                     .orderByDesc(Activate::getId)
                     .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));
             return HttpResult.success(activateIPage);
+        } else if (actPage.getType() == 6) { // 管理员获取活动列表，只返回进行中喝已结束的
+            if ("进行中".equals(actPage.getStatus()) || "".equals(actPage.getStatus())) {
+                IPage<Activate> activateIPage = activateService.lambdaQuery()
+                    .eq(Activate::getStrtwo, "-1")
+                    .ne(Activate::getStrone,"0")
+                    .ne(Activate::getStrone,"-1")
+                    .like(Activate::getTitle,actPage.getValue())
+                    .orderByDesc(Activate::getId)
+                    .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));
+                return HttpResult.success(activateIPage);
+            } else if ("已结束".equals(actPage.getStatus())) {
+                IPage<Activate> activateIPage = activateService.lambdaQuery()
+                    .eq(Activate::getStrtwo, "-1")
+                    .eq(Activate::getStrone,"-1")
+                    .like(Activate::getTitle,actPage.getValue())
+                    .orderByDesc(Activate::getId)
+                    .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));
+                return HttpResult.success(activateIPage);
+            }
+
         }
 
 
