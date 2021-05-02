@@ -161,7 +161,7 @@ public class ActivateController {
                     .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));
             return HttpResult.success(activateIPage);
         } else if (actPage.getType() == 6) { // 管理员获取活动列表，只返回进行中喝已结束的
-            if ("进行中".equals(actPage.getStatus()) || "".equals(actPage.getStatus())) {
+            if ("进行中".equals(actPage.getStatus())) {
                 IPage<Activate> activateIPage = activateService.lambdaQuery()
                     .eq(Activate::getStrtwo, "-1")
                     .ne(Activate::getStrone,"0")
@@ -174,6 +174,13 @@ public class ActivateController {
                 IPage<Activate> activateIPage = activateService.lambdaQuery()
                     .eq(Activate::getStrtwo, "-1")
                     .eq(Activate::getStrone,"-1")
+                    .like(Activate::getTitle,actPage.getValue())
+                    .orderByDesc(Activate::getId)
+                    .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));
+                return HttpResult.success(activateIPage);
+            }else{
+                IPage<Activate> activateIPage = activateService.lambdaQuery()
+                    .eq(Activate::getStrtwo, "-1")
                     .like(Activate::getTitle,actPage.getValue())
                     .orderByDesc(Activate::getId)
                     .page(new Page<Activate>(actPage.getPage(), actPage.getPageCount()));

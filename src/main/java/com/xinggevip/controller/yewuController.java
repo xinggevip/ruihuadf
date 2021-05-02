@@ -52,16 +52,19 @@ public class yewuController {
             @ApiImplicitParam(name = "name", value = "姓名")
     })
     @PostMapping("/join")
-    public HttpResult login(@RequestParam String invitationCode,@RequestParam String name) {
+    public HttpResult login(@RequestParam String invitationCode,@RequestParam String name, @RequestParam String actid) {
         // 获取验证码类型
-        List<Invitation> invitationList = invitationService.lambdaQuery().eq(Invitation::getInvitationCode, invitationCode).list();
+        List<Invitation> invitationList = invitationService.lambdaQuery()
+                .eq(Invitation::getActivateId,actid)
+                .eq(Invitation::getInvitationCode, invitationCode)
+                .list();
         if (invitationList.size() == 0) {
             return HttpResult.failure(ResultCodeEnum.NOFIND_CODE_ERRORTWO);
         }
 
         Invitation invitation = invitationList.get(0);
         String codeType = invitation.getInvitationType();
-        Integer activateId = invitation.getActivateId();
+        Integer activateId = Integer.valueOf(actid);
         Integer userid = null;
         // 验证码为选手
         if ("1".equals(codeType)) {
