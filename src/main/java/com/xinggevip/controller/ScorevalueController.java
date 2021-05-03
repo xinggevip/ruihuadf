@@ -120,4 +120,12 @@ public class ScorevalueController {
         return scorevalueService.findById(id);
     }
 
+    @ApiOperation(value = "个人成绩查询")
+    @GetMapping("/getplayerscore/actid/{actid}")
+    public HttpResult getplayerscoreByActid(@PathVariable Integer actid){
+        return scorevalueService.getScoreOf0EveryOne(actid);
+    }
+
+
+
 }
