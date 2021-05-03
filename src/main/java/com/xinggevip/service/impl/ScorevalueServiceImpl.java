@@ -69,4 +69,10 @@ public class ScorevalueServiceImpl extends ServiceImpl<ScorevalueMapper, Scoreva
         List<Map<String, Object>> yidafenPlayerScoreValue = stepMapper.getYiDaScoreValue(stepid, playerid, judgeid);
         return HttpResult.success(yidafenPlayerScoreValue);
     }
+
+    @Override
+    public HttpResult getScoreOf0EveryOne(Integer actid) {
+
+        return null;
+    }
 }

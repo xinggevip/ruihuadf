@@ -22,5 +22,36 @@
         <sql id="Base_Column_List">
             id, scoreitem_id, judge_id, player_id, num_value, str_value, strone, strtwo, strthree, numone, numtwo, numthree
         </sql>
+    <select id="getScoreOfEveryOne" resultType="java.util.Map">
+        -- 查询有几个评委给指定选手打分，指定活动，指定环节
+
+        SELECT
+        activate.id AS activate_id,
+        step.id AS step_id,
+        scorevalue.player_id,
+        scorevalue.judge_id,
+        activate.title AS act_title,
+        step.title AS step_title,
+        player.`name` AS player_name,
+        judge.judge_name,
+        GROUP_CONCAT(scoreitem.item_name) AS score_item_list,
+        Sum(scorevalue.num_value) AS sum_score,
+        SUM(scoreitem.max_score) AS max_score,
+        player.company,
+        player.dep,
+        player.post
+        FROM
+        scorevalue
+        LEFT JOIN scoreitem ON scorevalue.scoreitem_id = scoreitem.id
+        LEFT JOIN step ON scoreitem.step_id = step.id
+        LEFT JOIN activate ON activate.id = step.activate_id
+        LEFT JOIN player ON scorevalue.player_id = player.id
+        LEFT JOIN judge ON scorevalue.judge_id = judge.id
+        WHERE activate.id = #{actid}
+        GROUP BY scorevalue.strone
+        ORDER BY activate.id,step.id,player.id,judge.id
+
+
+    </select>
 
 </mapper>
