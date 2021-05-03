@@ -3,12 +3,10 @@ package com.xinggevip.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.xinggevip.dao.PlayerMapper;
-import com.xinggevip.domain.Invitation;
-import com.xinggevip.domain.Judge;
-import com.xinggevip.domain.Player;
-import com.xinggevip.domain.User;
+import com.xinggevip.domain.*;
 import com.xinggevip.enunm.ResultCodeEnum;
 import com.xinggevip.exception.EmpLoginException;
+import com.xinggevip.service.ActivateService;
 import com.xinggevip.service.InvitationService;
 import com.xinggevip.service.PlayerService;
 import com.xinggevip.service.UserService;
@@ -46,10 +44,14 @@ public class yewuController {
     @Resource
     private InvitationService invitationService;
 
+    @Resource
+    private ActivateService activateService;
+
     @ApiOperation(value = "进入打分活动")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "invitationCode", value = "验证码"),
-            @ApiImplicitParam(name = "name", value = "姓名")
+            @ApiImplicitParam(name = "name", value = "姓名"),
+            @ApiImplicitParam(name = "actid", value = "活动id")
     })
     @PostMapping("/join")
     public HttpResult login(@RequestParam String invitationCode,@RequestParam String name, @RequestParam String actid) {
@@ -118,7 +120,6 @@ public class yewuController {
         }
         // 验证码为场控
         if ("3".equals(codeType)) {
-            System.out.println("验证码为场控");
             userid = -1;
         }
 

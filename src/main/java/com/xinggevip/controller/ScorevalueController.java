@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * <p>
@@ -74,7 +75,9 @@ public class ScorevalueController {
             return HttpResult.failure(ResultCodeEnum.DOUBLE_DAFWN_ERR);
         }
 
+        String uuid = UUID.randomUUID().toString();
         for (Scorevalue scorevalue : scorevalueList) {
+            scorevalue.setStrone(uuid);
             scorevalueService.add(scorevalue);
         }
         return HttpResult.success();
