@@ -2,6 +2,7 @@ package com.xinggevip.dao;
 
 import com.xinggevip.domain.Scorevalue;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.xinggevip.vo.ScorePage;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -16,5 +17,5 @@ import java.util.Map;
  * @since 2021-04-11
  */
 public interface ScorevalueMapper extends BaseMapper<Scorevalue> {
-    List<Map<String,Object>> getScoreOfEveryOne(@Param("actid") Integer actid);
+    List<Map<String,Object>> getScoreOfEveryOne(@Param("scorePage") ScorePage scorePage);
 }

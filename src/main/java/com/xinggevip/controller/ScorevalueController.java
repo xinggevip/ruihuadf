@@ -5,6 +5,7 @@ import com.xinggevip.domain.Scoreitem;
 import com.xinggevip.enunm.ResultCodeEnum;
 import com.xinggevip.service.ScoreitemService;
 import com.xinggevip.utils.HttpResult;
+import com.xinggevip.vo.ScorePage;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import org.apache.ibatis.annotations.Param;
@@ -85,7 +86,7 @@ public class ScorevalueController {
 
     // 根据环节ID和选手ID和评委ID查成绩
     @ApiOperation(value = "根据环节ID和选手ID和评委ID查车成绩")
-    @PostMapping("getYiDaScoreValue")
+    @PostMapping("/getYiDaScoreValue")
     public HttpResult getYiDaScoreValue(@RequestParam Integer stepid, @RequestParam Integer playerid, @RequestParam Integer judgeid) {
         return scorevalueService.getYiDaScoreValue(stepid, playerid, judgeid);
     }
@@ -121,9 +122,9 @@ public class ScorevalueController {
     }
 
     @ApiOperation(value = "个人成绩查询")
-    @GetMapping("/getplayerscore/actid/{actid}")
-    public HttpResult getplayerscoreByActid(@PathVariable Integer actid){
-        return scorevalueService.getScoreOf0EveryOne(actid);
+    @PostMapping("/getplayerscore")
+    public HttpResult getplayerscoreByActid(@RequestBody ScorePage scorePage){
+        return scorevalueService.getScoreOfEveryOne(scorePage);
     }
 
 

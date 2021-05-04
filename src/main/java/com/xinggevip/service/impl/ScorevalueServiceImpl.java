@@ -6,6 +6,7 @@ import com.xinggevip.dao.ScorevalueMapper;
 import com.xinggevip.service.ScorevalueService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xinggevip.utils.HttpResult;
+import com.xinggevip.vo.ScorePage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -77,8 +78,8 @@ public class ScorevalueServiceImpl extends ServiceImpl<ScorevalueMapper, Scoreva
     }
 
     @Override
-    public HttpResult getScoreOf0EveryOne(Integer actid) {
-        List<Map<String, Object>> res = scorevalueMapper.getScoreOfEveryOne(actid);
+    public HttpResult getScoreOfEveryOne(ScorePage scorePage) {
+        List<Map<String, Object>> res = scorevalueMapper.getScoreOfEveryOne(scorePage);
         ArrayList<Map<String, Object>> quchonghou = new ArrayList<>();
 
         for (Map<String, Object> re : res) {
@@ -100,6 +101,7 @@ public class ScorevalueServiceImpl extends ServiceImpl<ScorevalueMapper, Scoreva
                     boolean cunzaiRes = quchong.containsKey("judge_num");
                     if (cunzaiRes) {
                         quchong.put("judge_num", (Integer) quchong.get("judge_num") + 1);
+                        quchong.put("judge_name",(String) quchong.get("judge_name") + "," + (String) re.get("judge_name") + String.valueOf( (BigDecimal) re.get("sum_score")));
                     }
                     BigDecimal sum_score1 = (BigDecimal)quchong.get("sum_score");
                     quchong.put("sum_score", sum_score1.add(sum_score));
@@ -112,6 +114,7 @@ public class ScorevalueServiceImpl extends ServiceImpl<ScorevalueMapper, Scoreva
                 System.out.println("不存在，添加");
                 System.out.println(re);
                 re.put("judge_num", 1);
+                re.put("judge_name",(String) re.get("judge_name") + String.valueOf( (BigDecimal) re.get("sum_score")));
                 quchonghou.add(re);
             }
 

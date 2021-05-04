@@ -27,6 +27,9 @@ import javax.annotation.Resource;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * <p>
@@ -156,4 +159,24 @@ public class PlayerController {
         Integer stepid = step.getId();
         return scorevalueService.getPlayerByStepIdAndJudgeId(stepid, judgeid, playername);
     }
+
+    @ApiOperation(value = "根据活动id获取选手去重后的单位列表和部门列表")
+    @GetMapping("/getCompanysAndDepsByActid/{actid}")
+    public HttpResult getCompanysAndDepsByActid(@PathVariable Integer actid){
+        List<Player> playerList = playerService.lambdaQuery()
+                .eq(Player::getActivateId, actid)
+                .list();
+        HashSet<String> companySet = new HashSet<>();
+        HashSet<String> depSet = new HashSet<>();
+        for (Player player : playerList) {
+            companySet.add(player.getCompany());
+            depSet.add(player.getDep());
+        }
+        ArrayList<HashSet<String>> list = new ArrayList<>();
+        list.add(companySet);
+        list.add(depSet);
+        return HttpResult.success(list);
+    }
+
+
 }

@@ -47,7 +47,26 @@
         LEFT JOIN activate ON activate.id = step.activate_id
         LEFT JOIN player ON scorevalue.player_id = player.id
         LEFT JOIN judge ON scorevalue.judge_id = judge.id
-        WHERE activate.id = #{actid}
+        <where>
+            <if test="scorePage.actid != null and scorePage.actid != ''">
+                AND activate.id = #{scorePage.actid}
+            </if>
+            <if test="scorePage.stepid != null and scorePage.stepid != ''">
+                AND step.id IN(${scorePage.stepid})
+            </if>
+            <if test="scorePage.company != null and scorePage.company != ''">
+                AND player.company IN(${scorePage.company})
+            </if>
+            <if test="scorePage.dep != null and scorePage.dep != ''">
+                AND player.dep IN(${scorePage.dep})
+            </if>
+            <if test="scorePage.playername != null and scorePage.playername != ''">
+                AND player.`name` LIKE '%${scorePage.playername}%'
+            </if>
+            <if test="scorePage.judgename != null and scorePage.judgename != ''">
+                AND judge.judge_name LIKE '%${scorePage.judgename}%'
+            </if>
+        </where>
         GROUP BY scorevalue.strone
         ORDER BY activate.id,step.id,player.id,judge.id
 

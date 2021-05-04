@@ -3,6 +3,7 @@ package com.xinggevip;
 import com.google.gson.internal.$Gson$Preconditions;
 import com.xinggevip.dao.ScorevalueMapper;
 import com.xinggevip.domain.Scorevalue;
+import com.xinggevip.vo.ScorePage;
 import org.junit.jupiter.api.Test;
 import org.omg.CORBA.INTERNAL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,9 @@ class RuihuadfApplicationTests {
     @Test
     void test01() {
         Integer actid = 1;
-        List<Map<String, Object>> res = scorevalueMapper.getScoreOfEveryOne(actid);
+        ScorePage scorePage = new ScorePage();
+        scorePage.setActid(1);
+        List<Map<String, Object>> res = scorevalueMapper.getScoreOfEveryOne(scorePage);
         ArrayList<Map<String, Object>> quchonghou = new ArrayList<>();
 
         for (Map<String, Object> re : res) {

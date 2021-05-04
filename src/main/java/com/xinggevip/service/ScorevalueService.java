@@ -4,6 +4,7 @@ import com.xinggevip.domain.Scorevalue;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.xinggevip.utils.HttpResult;
+import com.xinggevip.vo.ScorePage;
 
 /**
  * <p>
@@ -60,5 +61,5 @@ public interface ScorevalueService extends IService<Scorevalue> {
 
     HttpResult getYiDaScoreValue(Integer stepid, Integer playerid, Integer judgeid);
 
-    HttpResult getScoreOf0EveryOne(Integer actid);
+    HttpResult getScoreOfEveryOne(ScorePage scorePage);
 }
